@@ -32,6 +32,13 @@ module.exports = {
         })
       },
       {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        loaders: [
+          'ts'
+        ]
+      },
+      {
         test: /\.js$/,
         exclude: /node_modules/,
         loaders: [
@@ -54,6 +61,9 @@ module.exports = {
       template: conf.path.src('index.html'),
       inject: true
     }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': '"production"'
+    }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {unused: true, dead_code: true} // eslint-disable-line camelcase
     }),
@@ -64,8 +74,23 @@ module.exports = {
     path: path.join(process.cwd(), conf.paths.dist),
     filename: '[name]-[hash].js'
   },
+  resolve: {
+    extensions: [
+      '',
+      '.webpack.js',
+      '.web.js',
+      '.js',
+      '.ts'
+    ]
+  },
   entry: {
     app: `./${conf.path.src('index')}`,
     vendor: Object.keys(pkg.dependencies)
+  },
+  ts: {
+    configFileName: 'tsconfig.json'
+  },
+  tslint: {
+    configuration: require('../tslint.json')
   }
 };
